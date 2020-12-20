@@ -72,13 +72,11 @@ func (w *Worker) Start() {
 }
 
 func (m *Manager) Start(numWorkers int) {
-	// Create numWorkers:
 	for i := 0; i < numWorkers; i++ {
 		worker := NewWorker(i, m.workerQueue, m.workQueue, m.status)
 		worker.Start()
 	}
 
-	// wait for work to be added then pass it off.
 	go func() {
 		for {
 			select {
@@ -130,8 +128,12 @@ func main() {
 
 	m.AddJob(createJob("a", 2))
 	m.AddJob(createJob("b", 2))
+	m.AddJob(createJob("c", 2))
 
-	m.Start(2)
+	m.Start(3)
+
+	//Uncomment this to trigger deadlock
+	// m.Start(2)
 
 	for {
 		if m.Finished() {
